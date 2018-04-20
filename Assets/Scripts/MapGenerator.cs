@@ -92,7 +92,7 @@ public class MapGenerator : MonoBehaviour {
 	}
 
 	//void OnDrawGizmos() {
-	//	if(map != null) {
+	//	if (map != null) {
 	//		for (int x = 0; x < width; x++) {
 	//			for (int y = 0; y < height; y++) {
 	//				Gizmos.color = (map[x, y] == 1) ? Color.black : Color.white;
