@@ -120,8 +120,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f8df48473d67d254287d3bb958d8a655, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  width: 50
-  height: 50
+  width: 150
+  height: 75
   seed: Michael
   useRandomSeed: 1
   randomFillPercent: 40
