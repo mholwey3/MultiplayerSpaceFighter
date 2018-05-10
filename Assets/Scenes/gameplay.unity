@@ -120,11 +120,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f8df48473d67d254287d3bb958d8a655, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  width: 150
-  height: 75
+  width: 128
+  height: 72
   seed: Michael
   useRandomSeed: 1
-  randomFillPercent: 40
+  randomFillPercent: 53
   smoothIterations: 5
   birthLimit: 4
   deathLimit: 4
@@ -135,7 +135,7 @@ Transform:
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 532591739}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -6.6980414, y: 13.377072, z: 49.636345}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_Children:
