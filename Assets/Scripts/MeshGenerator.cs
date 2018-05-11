@@ -6,6 +6,8 @@ public class MeshGenerator : MonoBehaviour {
 
 	public SquareGrid squareGrid;
 	public MeshFilter walls;
+    public MeshFilter mapMesh;
+
 	List<Vector3> vertices;
 	List<int> triangles;
 
@@ -31,22 +33,32 @@ public class MeshGenerator : MonoBehaviour {
 		}
 
 		Mesh mesh = new Mesh();
-		GetComponent<MeshFilter>().mesh = mesh;
+		mapMesh.mesh = mesh;
 
 		mesh.vertices = vertices.ToArray();
 		mesh.triangles = triangles.ToArray();
 		mesh.RecalculateNormals();
 
-		CreateWallMesh();
+        // For tiling a texture on the map mesh:
+        int tileAmount = 10;
+        Vector2[] uvs = new Vector2[vertices.Count];
+        for(int i = 0; i < vertices.Count; i++) {
+            float percentX = Mathf.InverseLerp(-map.GetLength(0) / 2 * squareSize, map.GetLength(0) / 2 * squareSize, vertices[i].x) * tileAmount;
+            float percentY = Mathf.InverseLerp(-map.GetLength(0) / 2 * squareSize, map.GetLength(0) / 2 * squareSize, vertices[i].z) * tileAmount;
+            uvs[i] = new Vector2(percentX, percentY);
+        }
+        mesh.uv = uvs;
+
+		CreateWallMesh(map, squareSize);
 	}
 
-	void CreateWallMesh() {
+	void CreateWallMesh(int[,] map, float squareSize) {
 		CalculateMeshOutlines();
 
 		List<Vector3> wallVertices = new List<Vector3>();
 		List<int> wallTriangles = new List<int>();
 		Mesh wallMesh = new Mesh();
-		float wallHeight = 5;
+		float wallHeight = 2;
 
 		foreach(List<int> outline in outlines) {
 			for(int i = 0; i < outline.Count - 1; i++) {
@@ -69,6 +81,19 @@ public class MeshGenerator : MonoBehaviour {
 		wallMesh.vertices = wallVertices.ToArray();
 		wallMesh.triangles = wallTriangles.ToArray();
 		walls.mesh = wallMesh;
+
+        // For tiling a texture on the wall mesh:
+        int tileAmount = 10;
+        Vector2[] uvs = new Vector2[wallVertices.Count];
+        for (int i = 0; i < wallVertices.Count; i++) {
+            float percentX = Mathf.InverseLerp(-map.GetLength(0) / 2 * squareSize, map.GetLength(0) / 2 * squareSize, wallVertices[i].x) * tileAmount;
+            float percentY = Mathf.InverseLerp(-map.GetLength(0) / 2 * squareSize, map.GetLength(0) / 2 * squareSize, wallVertices[i].z) * tileAmount;
+            uvs[i] = new Vector2(percentX, percentY);
+        }
+        wallMesh.uv = uvs;
+
+        MeshCollider wallCollider = walls.gameObject.GetComponent<MeshCollider>();
+        wallCollider.sharedMesh = wallMesh;
 	}
 
 	void TriangulateSquare(Square square) {

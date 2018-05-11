@@ -18,6 +18,9 @@ public class MapGenerator : MonoBehaviour {
 	public int birthLimit;
 	public int deathLimit;
 
+    [Range(1, 5)]
+    public int passagewayRadius;
+
 	int[,] map;
 
 	void Start () {
@@ -170,7 +173,7 @@ public class MapGenerator : MonoBehaviour {
 		Room.ConnectRooms(roomA, roomB);
         List<Coord> line = GetLine(tileA, tileB);
         foreach(Coord c in line) {
-            DrawCircle(c, 1);
+            DrawCircle(c, passagewayRadius);
         }
 	}
 

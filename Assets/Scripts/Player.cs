@@ -8,8 +8,8 @@ public class Player : MonoBehaviour {
 	public float deceleration;
 	public float rotationSpeed;
 
-	private Rigidbody rigidbody;
-	private ParticleSystem leftExhaust;
+    private new Rigidbody rigidbody;
+    private ParticleSystem leftExhaust;
 	private ParticleSystem rightExhaust;
 
 	void Start () {
