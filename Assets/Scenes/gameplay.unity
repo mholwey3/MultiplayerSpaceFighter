@@ -90,6 +90,11 @@ NavMeshSettings:
     cellSize: 0.16666667
     manualCellSize: 0
   m_NavMeshData: {fileID: 0}
+--- !u!4 &280817471 stripped
+Transform:
+  m_PrefabParentObject: {fileID: 4000012893064616, guid: 97d3b0825276d86449cd35c963cf1e84,
+    type: 2}
+  m_PrefabInternal: {fileID: 1573359124}
 --- !u!1 &532591739
 GameObject:
   m_ObjectHideFlags: 0
@@ -100,6 +105,7 @@ GameObject:
   - 4: {fileID: 532591741}
   - 114: {fileID: 532591740}
   - 114: {fileID: 532591742}
+  - 114: {fileID: 532591743}
   m_Layer: 0
   m_Name: Map Generator
   m_TagString: Untagged
@@ -118,14 +124,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f8df48473d67d254287d3bb958d8a655, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  width: 128
-  height: 72
+  width: 50
+  height: 50
   seed: Michael
   useRandomSeed: 1
-  randomFillPercent: 50
+  randomFillPercent: 46
   smoothIterations: 5
   birthLimit: 4
   deathLimit: 4
+  squareSize: 1
   passagewayRadius: 3
 --- !u!4 &532591741
 Transform:
@@ -155,6 +162,18 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   walls: {fileID: 1506917109}
   mapMesh: {fileID: 1291673046}
+--- !u!114 &532591743
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 532591739}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: eb6ed7d0d7630d04a8dadb56bcbce438, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  player: {fileID: 280817471}
 --- !u!1 &959346113
 GameObject:
   m_ObjectHideFlags: 0
@@ -472,7 +491,7 @@ Skybox:
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 1559222702}
   m_Enabled: 1
-  m_CustomSkybox: {fileID: 2100000, guid: d5095726ec74ffd449d1891dd1298bc3, type: 2}
+  m_CustomSkybox: {fileID: 2100000, guid: 049c75f06dbc09145afac2f5aa707459, type: 2}
 --- !u!1001 &1573359124
 Prefab:
   m_ObjectHideFlags: 0
@@ -490,7 +509,7 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 4000012893064616, guid: 97d3b0825276d86449cd35c963cf1e84, type: 2}
       propertyPath: m_LocalPosition.z
-      value: 1
+      value: 0.5
       objectReference: {fileID: 0}
     - target: {fileID: 4000012893064616, guid: 97d3b0825276d86449cd35c963cf1e84, type: 2}
       propertyPath: m_LocalRotation.x

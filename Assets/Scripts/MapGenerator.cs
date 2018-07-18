@@ -18,6 +18,8 @@ public class MapGenerator : MonoBehaviour {
 	public int birthLimit;
 	public int deathLimit;
 
+    public float squareSize;
+
     [Range(1, 5)]
     public int passagewayRadius;
 
@@ -57,7 +59,10 @@ public class MapGenerator : MonoBehaviour {
 		}
 
 		MeshGenerator meshGen = GetComponent<MeshGenerator>();
-		meshGen.GenerateMesh(borderedMap, 1);
+		meshGen.GenerateMesh(borderedMap, squareSize);
+
+		Grid mapGrid = GetComponent<Grid>();
+		mapGrid.InitGrid(borderedMap, squareSize);
 	}
 
 	void ProcessMap() {
