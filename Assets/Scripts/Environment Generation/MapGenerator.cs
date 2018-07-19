@@ -61,7 +61,7 @@ public class MapGenerator : MonoBehaviour {
 		MeshGenerator meshGen = GetComponent<MeshGenerator>();
 		meshGen.GenerateMesh(borderedMap, squareSize);
 
-		Grid mapGrid = GetComponent<Grid>();
+		Grid mapGrid = GameObject.FindGameObjectWithTag("A_Star").GetComponent<Grid>();
 		mapGrid.InitGrid(borderedMap, squareSize);
 	}
 
