@@ -30,6 +30,12 @@ public class Grid : MonoBehaviour {
 		}
 	}
 
+	public int MaxSize {
+		get {
+			return gridSizeX * gridSizeY;
+		}
+	}
+
 	public List<Node> GetNeighbors(Node node) {
 		List<Node> neighbors = new List<Node>();
 
