@@ -25,7 +25,7 @@ public class MapGenerator : MonoBehaviour {
 
 	int[,] map;
 
-	void Start () {
+	void Awake () {
 		GenerateMap();
 	}
 
@@ -35,6 +35,10 @@ public class MapGenerator : MonoBehaviour {
 		}
 	}
 
+	/// <summary>
+	/// Procedurally generates a map using cellular automata. Cleans up the map of regions that are too small.
+	/// Connects rooms. Creates a border around the map. Generates the mesh of the resultant map.
+	/// </summary>
 	void GenerateMap() {
 		map = new int[width, height];
 		RandomFillMap();
@@ -43,7 +47,7 @@ public class MapGenerator : MonoBehaviour {
 			SmoothMap();
 		}
 
-		ProcessMap();
+		RemoveSmallRegionsAndConnectRooms();
 
 		int borderSize = 1;
 		int[,] borderedMap = new int[width + borderSize * 2, height + borderSize * 2];
@@ -65,7 +69,10 @@ public class MapGenerator : MonoBehaviour {
 		mapGrid.InitGrid(borderedMap, squareSize);
 	}
 
-	void ProcessMap() {
+	/// <summary>
+	/// Removes wall regions and room regions that are smaller than the threshold size and connects the remaining rooms.
+	/// </summary>
+	void RemoveSmallRegionsAndConnectRooms() {
 		List<List<Coord>> wallRegions = GetRegions(1);
 		int wallThresholdSize = 50;
 		foreach(List<Coord> wallRegion in wallRegions) {
@@ -78,23 +85,28 @@ public class MapGenerator : MonoBehaviour {
 
 		List<List<Coord>> roomRegions = GetRegions(0);
 		int roomThresholdSize = 50;
-		List<Room> survivingRooms = new List<Room>();
+		List<Room> remainingRooms = new List<Room>();
 		foreach (List<Coord> roomRegion in roomRegions) {
 			if (roomRegion.Count < roomThresholdSize) {
 				foreach (Coord tile in roomRegion) {
 					map[tile.tileX, tile.tileY] = 1;
 				}
 			}else {
-				survivingRooms.Add(new Room(roomRegion, map));
+				remainingRooms.Add(new Room(roomRegion, map));
 			}
 		}
 
-		survivingRooms.Sort();
-		survivingRooms[0].isMainRoom = true;
-		survivingRooms[0].isAccessibleFromMainRoom = true;
-		ConnectClosestRooms(survivingRooms);
+		remainingRooms.Sort();
+		remainingRooms[0].isMainRoom = true;
+		remainingRooms[0].isAccessibleFromMainRoom = true;
+		ConnectClosestRooms(remainingRooms);
 	}
 
+	/// <summary>
+	/// Finds the closest paths between all rooms and connects them with passages.
+	/// </summary>
+	/// <param name="allRooms"></param>
+	/// <param name="forceAccessibilityFromMainRoom"></param>
 	void ConnectClosestRooms(List<Room> allRooms, bool forceAccessibilityFromMainRoom = false) {
 		List<Room> roomListA = new List<Room>(); // rooms that are NOT accessible from main room
 		List<Room> roomListB = new List<Room>(); // rooms that are accessible from main room
@@ -174,6 +186,13 @@ public class MapGenerator : MonoBehaviour {
 		}
 	}
 
+	/// <summary>
+	/// Creates a passage between two rooms using two Coords of these rooms.
+	/// </summary>
+	/// <param name="roomA"></param>
+	/// <param name="roomB"></param>
+	/// <param name="tileA"></param>
+	/// <param name="tileB"></param>
 	void CreatePassage(Room roomA, Room roomB, Coord tileA, Coord tileB) {
 		Room.ConnectRooms(roomA, roomB);
         List<Coord> line = GetLine(tileA, tileB);
@@ -182,6 +201,11 @@ public class MapGenerator : MonoBehaviour {
         }
 	}
 
+	/// <summary>
+	/// Makes Coord c and all Coords withing radius r traversable.
+	/// </summary>
+	/// <param name="c"></param>
+	/// <param name="r"></param>
     void DrawCircle(Coord c, int r) {
         for(int x = -r; x <= r; x++) {
             for (int y = -r; y <= r; y++) {
@@ -196,6 +220,12 @@ public class MapGenerator : MonoBehaviour {
         }
     }
 
+	/// <summary>
+	/// Gets a line between the two Coords.
+	/// </summary>
+	/// <param name="from"></param>
+	/// <param name="to"></param>
+	/// <returns>A list of Coords - the Coords that make up the line between from and to</returns>
     List<Coord> GetLine(Coord from, Coord to) {
         List<Coord> line = new List<Coord>();
 
@@ -249,6 +279,11 @@ public class MapGenerator : MonoBehaviour {
 		return new Vector3(-width / 2 + .5f + tile.tileX, 20, -height / 2 + .5f + tile.tileY);
 	}
 
+	/// <summary>
+	/// Gets either the rooms (0) or the walled-off (1) regions of the map, depending on the tileType.
+	/// </summary>
+	/// <param name="tileType">Signifies if the regions we're looking for are rooms (0) or walls (1)</param>
+	/// <returns>A list of a list of Coords - the desired regions</returns>
 	List<List<Coord>> GetRegions(int tileType) {
 		List<List<Coord>> regions = new List<List<Coord>>();
 		int[,] mapFlags = new int[width, height];
@@ -269,6 +304,12 @@ public class MapGenerator : MonoBehaviour {
 		return regions;
 	}
 
+	/// <summary>
+	/// Gets all of the tiles contained within a region.
+	/// </summary>
+	/// <param name="startX"></param>
+	/// <param name="startY"></param>
+	/// <returns>A list of Coords - the region tiles</returns>
 	List<Coord> GetRegionTiles(int startX, int startY) {
 		List<Coord> tiles = new List<Coord>();
 		int[,] mapFlags = new int[width, height];
@@ -297,10 +338,19 @@ public class MapGenerator : MonoBehaviour {
 		return tiles;
 	}
 
+	/// <summary>
+	/// Checks if the (x, y) coordinates are contained within the map.
+	/// </summary>
+	/// <param name="x"></param>
+	/// <param name="y"></param>
+	/// <returns>true if the coordinates are contained within the map; false otherwise</returns>
 	bool IsInMapRange(int x, int y) {
 		return x >= 0 && x < width && y >= 0 && y < height;
 	}
 
+	/// <summary>
+	/// Randomly assigns the tiles of the map as on (1) or off (0).
+	/// </summary>
 	void RandomFillMap() {
 		if (useRandomSeed) {
 			seed = Time.time.ToString();
@@ -319,6 +369,11 @@ public class MapGenerator : MonoBehaviour {
 		}
 	}
 
+	/// <summary>
+	/// Simulates Conway's Game of Life (or Cellular Automata depending on how fancy you want to sound)
+	/// by assigning the map's tiles as on if there are enough neighboring tiles or off if there are not
+	/// enough neighboring tiles.
+	/// </summary>
 	void SmoothMap() {
 		for (int x = 0; x < width; x++) {
 			for (int y = 0; y < height; y++) {
@@ -333,6 +388,12 @@ public class MapGenerator : MonoBehaviour {
 		}
 	}
 
+	/// <summary>
+	/// For the given (x, y) tile on the map, gets the number of surrounding tiles that are walls.
+	/// </summary>
+	/// <param name="gridX"></param>
+	/// <param name="gridY"></param>
+	/// <returns></returns>
 	int GetSurroundingWallCount(int gridX, int gridY) {
 		int wallCount = 0;
 		for(int neighborX = gridX - 1; neighborX <= gridX + 1; neighborX++) {

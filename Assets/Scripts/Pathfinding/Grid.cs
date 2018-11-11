@@ -6,6 +6,7 @@ public class Grid : MonoBehaviour {
 
 	public Transform player;
 
+	public bool displayGridGizmos;
 	private Vector2 gridWorldSize;
 	private float nodeRadius, nodeDiameter;
 	private Node[,] grid;
@@ -17,7 +18,10 @@ public class Grid : MonoBehaviour {
 		nodeDiameter = _nodeDiameter;
 		nodeRadius = _nodeDiameter / 2;
 		gridWorldSize = new Vector2(gridSizeX * nodeDiameter, gridSizeY * nodeDiameter);
+		CreateGrid(map);
+	}
 
+	void CreateGrid(int[,] map) {
 		grid = new Node[gridSizeX, gridSizeY];
 		Vector3 worldBottomLeft = transform.position - Vector3.right * gridWorldSize.x / 2 - Vector3.up * gridWorldSize.y / 2;
 
@@ -66,19 +70,13 @@ public class Grid : MonoBehaviour {
 		int y = Mathf.RoundToInt((gridSizeY - 1) * percentY);
 		return grid[x, y];
 	}
-
-	public List<Node> path;
+	
 	void OnDrawGizmos() {
 		Gizmos.DrawWireCube(transform.position, new Vector3(gridWorldSize.x, gridWorldSize.y, 1));
 
-		if(grid != null) {
+		if(grid != null && displayGridGizmos) {
 			foreach(Node n in grid) {
 				Gizmos.color = (n.walkable) ? Color.white : Color.red;
-				if(path != null) {
-					if (path.Contains(n)) {
-						Gizmos.color = Color.black;
-					}
-				}
 				Gizmos.DrawCube(n.worldPosition, Vector3.one * (nodeDiameter - .1f));
 			}
 		}
